@@ -1,0 +1,51 @@
+name: PR Builder Workflow
+
+on:
+  workflow_call:
+    inputs:
+      TEST_PARAMETERS:
+        description: 'yarn test parameters'
+        type: string
+        default: '--passWithNoTests'
+      TEST_COMAMND:
+        description: 'Extra commands to execute as part of test steps'
+        type: string
+        default: ''
+
+    secrets:
+      SHARED_ACTIONS_SSH_KEY:
+        required: true
+      GITHUB_PACKAGE_ACCESS_TOKEN:
+        description: 'Github package access token for @boma-marketing package'
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Checkout shared actions
+        uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
+          repository: boma-marketing/gh-actions
+          ref: main
+          path: ./.github/actions/boma
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        uses: ./.github/actions/boma/install-from-cache
+        with:
+          node-auth-token: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
+
+      - name: Run tests
+        run: |
+          yarn test ${{ inputs.TEST_PARAMETERS }}
+          ${{ inputs.TEST_COMAMND }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}

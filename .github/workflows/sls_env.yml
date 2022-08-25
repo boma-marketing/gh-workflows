@@ -1,0 +1,79 @@
+name: Deploy Serverless to Specific Env
+
+on:
+  workflow_call:
+    inputs:
+      APP_NAME:
+        type: string
+        required: true
+      ENV_NAME:
+        type: string
+        required: true
+    secrets:
+      SHARED_ACTIONS_SSH_KEY:
+        required: true
+      GITHUB_PACKAGE_ACCESS_TOKEN:
+        required: true
+        description: 'Github package access token for @boma-marketing package'
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_ACCESS_KEY_SECRET:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Checkout shared actions
+        uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
+          repository: boma-marketing/gh-actions
+          ref: main
+          path: ./.github/actions/boma
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        uses: ./.github/actions/boma/install-from-cache
+        with:
+          node-auth-token: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
+
+      - name: Build
+        run: |
+          yarn workspaces focus --production
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
+
+      - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: ./*
+          key: ${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout shared actions
+        uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
+          repository: boma-marketing/gh-actions
+          ref: main
+          path: ./.github/actions/boma
+
+      - name: Deploy
+        uses: ./.github/actions/boma/deploy-sls
+        with:
+          app-name: ${{ inputs.APP_NAME }}
+          env-name: ${{ inputs.ENV_NAME }}
+          github-sha: ${{ github.sha }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}

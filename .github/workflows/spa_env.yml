@@ -1,0 +1,43 @@
+name: Deploy Serverless to DEV/TEST
+
+on:
+  workflow_call:
+    inputs:
+      APP_NAME:
+        type: string
+        required: true
+      ENV_NAME:
+        type: string
+        required: true
+      CF_DISTRIBUTION_ID:
+        type: string
+        required: true
+    secrets:
+      SHARED_ACTIONS_SSH_KEY:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_ACCESS_KEY_SECRET:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout shared actions
+        uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
+          repository: boma-marketing/gh-actions
+          ref: main
+          path: ./.github/actions/boma
+
+      - name: Deploy to DEV
+        uses: ./.github/actions/boma/deploy-spa
+        with:
+          app-name: ${{ inputs.APP_NAME }}
+          env-name: ${{ inputs.ENV_NAME}}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+          cf-distribution-id: ${{ inputs.CF_DISTRIBUTION_ID }}
+

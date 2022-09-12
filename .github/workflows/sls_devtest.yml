@@ -71,7 +71,6 @@ jobs:
         with:
           app-name: ${{ inputs.APP_NAME }}
           env-name: dev
-          github-sha: ${{ github.sha }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
 
@@ -92,7 +91,6 @@ jobs:
         with:
           app-name: ${{ inputs.APP_NAME }}
           env-name: test
-          github-sha: ${{ github.sha }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
 

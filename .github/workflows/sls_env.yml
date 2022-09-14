@@ -47,7 +47,7 @@ jobs:
 
       - name: Build
         run: |
-          yarn workspaces focus --production
+          yarn build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
 

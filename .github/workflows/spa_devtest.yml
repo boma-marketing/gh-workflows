@@ -27,7 +27,7 @@ jobs:
   build:
     strategy:
       matrix:
-        env: [dev, test, staging, prod]
+        env: [dev, test]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code

@@ -30,7 +30,7 @@ jobs:
         with:
           ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
           repository: boma-marketing/gh-actions
-          ref: main
+          ref: v1.1.0
           path: ./.github/actions/boma
 
       - name: Setup Node

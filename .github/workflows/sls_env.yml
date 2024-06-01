@@ -29,20 +29,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Checkout shared actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
           repository: boma-marketing/gh-actions
-          ref: v1.1.0
+          ref: v2
           path: ./.github/actions/boma
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Install dependencies
         uses: ./.github/actions/boma/install-from-cache
@@ -55,7 +55,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: restore-build
         with:
           path: ./*
@@ -66,11 +66,11 @@ jobs:
     needs: build
     steps:
       - name: Checkout shared actions
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
           repository: boma-marketing/gh-actions
-          ref: v1.1.0
+          ref: v2
           path: ./.github/actions/boma
 
       - name: Deploy

@@ -7,7 +7,7 @@ on:
         description: 'yarn test parameters'
         type: string
         default: '--passWithNoTests'
-      TEST_COMAMND:
+      TEST_COMMAND:
         description: 'Extra commands to execute as part of test steps'
         type: string
         default: ''
@@ -46,6 +46,6 @@ jobs:
       - name: Run tests
         run: |
           yarn test ${{ inputs.TEST_PARAMETERS }}
-          ${{ inputs.TEST_COMAMND }}
+          ${{ inputs.TEST_COMMAND }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}

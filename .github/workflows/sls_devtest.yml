@@ -35,7 +35,7 @@ jobs:
         with:
           ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
           repository: boma-marketing/gh-actions
-          ref: v4.1.0
+          ref: v4.1.1
           path: ./.github/actions/boma
 
       - name: Setup Node
@@ -69,7 +69,7 @@ jobs:
         with:
           ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
           repository: boma-marketing/gh-actions
-          ref: v4.1.0
+          ref: v4.1.1
           path: ./.github/actions/boma
 
       - name: Deploy to DEV
@@ -91,7 +91,7 @@ jobs:
         with:
           ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
           repository: boma-marketing/gh-actions
-          ref: v4.1.0
+          ref: v4.1.1
           path: ./.github/actions/boma
 
       - name: Deploy to TEST

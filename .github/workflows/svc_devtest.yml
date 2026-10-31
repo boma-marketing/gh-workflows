@@ -18,8 +18,10 @@ on:
         required: true
 
 jobs:
+  # Build on arm64 so the EB zip's node_modules matches Graviton (t4g) instances.
+  # Deploy jobs stay on ubuntu-latest — they only call the AWS API.
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout source code
         uses: actions/checkout@v6

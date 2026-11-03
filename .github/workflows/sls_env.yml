@@ -23,6 +23,8 @@ on:
         required: true
       AWS_ACCESS_KEY_SECRET:
         required: true
+      SERVERLESS_ACCESS_KEY:
+        required: false
 
 jobs:
   build:
@@ -81,3 +83,4 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
           required-legacy-secrets: ${{ inputs.REQUIRED_LEGACY_SECRETS }}
+          serverless-access-key: ${{ secrets.SERVERLESS_ACCESS_KEY }}

@@ -20,6 +20,8 @@ on:
         required: true
       AWS_ACCESS_KEY_SECRET:
         required: true
+      SERVERLESS_ACCESS_KEY:
+        required: false
 
 jobs:
   build:
@@ -78,6 +80,7 @@ jobs:
           required-legacy-secrets: ${{ inputs.REQUIRED_LEGACY_SECRETS }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
+          serverless-access-key: ${{ secrets.SERVERLESS_ACCESS_KEY }}
 
   deploy-test:
     runs-on: ubuntu-latest
@@ -99,4 +102,4 @@ jobs:
           required-legacy-secrets: ${{ inputs.REQUIRED_LEGACY_SECRETS }}
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
-
+          serverless-access-key: ${{ secrets.SERVERLESS_ACCESS_KEY }}

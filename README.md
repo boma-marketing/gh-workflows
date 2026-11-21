@@ -47,6 +47,10 @@ on:
   push:
     tags: ['v*']
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   publish:
     uses: boma-marketing/gh-workflows/.github/workflows/npm_publish.yml@main
@@ -61,6 +65,8 @@ jobs:
 yarn version patch   # or edit package.json
 git tag v1.2.3 && git push origin v1.2.3
 ```
+
+The caller must grant `contents: read` and `packages: write`; a reusable workflow cannot elevate beyond the permissions of the calling workflow.
 
 The package is published with `yarn npm publish` using the job's own `github.token` (`packages: write`); the package access token is only used for installing and testing.
 

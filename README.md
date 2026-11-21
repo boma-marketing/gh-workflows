@@ -30,11 +30,13 @@ jobs:
   build-test:
     uses: boma-marketing/gh-workflows/.github/workflows/pr_builder.yml@main
     secrets:
-      SHARED_ACTIONS_SSH_KEY: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
-      GITHUB_PACKAGE_ACCESS_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
+      SHARED_ACTIONS_SSH_KEY: ${{ secrets.SHARED_GH_ACTIONS_SSH_KEY }}
+      GITHUB_PACKAGE_ACCESS_TOKEN: ${{ secrets.GPR_ACCESS_TOKEN }}
 ```
 
 Secrets are not inherited automatically; pass each one explicitly (or use `secrets: inherit` within the same organisation). Pin `@<tag-or-sha>` instead of `@main` if you need stable behaviour.
+
+The left-hand names (`SHARED_ACTIONS_SSH_KEY`, `GITHUB_PACKAGE_ACCESS_TOKEN`) are what the workflows declare; the right-hand `secrets.*` names in the examples (`SHARED_GH_ACTIONS_SSH_KEY`, `GPR_ACCESS_TOKEN`) are the caller-side repository or organisation secrets. Use whatever names your repo has. Note that GitHub does not allow repository secrets whose names start with `GITHUB_`, which is why the caller-side token is named differently.
 
 ### Publish an npm package
 
@@ -57,8 +59,8 @@ jobs:
     with:
       TEST_COMMAND: yarn test # optional, default shown
     secrets:
-      SHARED_ACTIONS_SSH_KEY: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
-      GITHUB_PACKAGE_ACCESS_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
+      SHARED_ACTIONS_SSH_KEY: ${{ secrets.SHARED_GH_ACTIONS_SSH_KEY }}
+      GITHUB_PACKAGE_ACCESS_TOKEN: ${{ secrets.GPR_ACCESS_TOKEN }}
 ```
 
 ```sh
@@ -80,8 +82,8 @@ jobs:
       APP_NAME: my-app
       ENV_NAME: prod
     secrets:
-      SHARED_ACTIONS_SSH_KEY: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
-      GITHUB_PACKAGE_ACCESS_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
+      SHARED_ACTIONS_SSH_KEY: ${{ secrets.SHARED_GH_ACTIONS_SSH_KEY }}
+      GITHUB_PACKAGE_ACCESS_TOKEN: ${{ secrets.GPR_ACCESS_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_ACCESS_KEY_SECRET: ${{ secrets.AWS_ACCESS_KEY_SECRET }}
       SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }} # optional

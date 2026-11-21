@@ -1,4 +1,4 @@
-name: Deploy Serverless to DEV/TEST
+name: Deploy SPA to Specific Env
 
 on:
   workflow_call:

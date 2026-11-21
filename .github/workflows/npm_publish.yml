@@ -1,0 +1,68 @@
+name: Publish npm Package Workflow
+
+on:
+  workflow_call:
+    inputs:
+      TEST_COMMAND:
+        description: 'Command to run before publishing'
+        type: string
+        default: 'yarn test'
+
+    secrets:
+      SHARED_ACTIONS_SSH_KEY:
+        required: true
+      GITHUB_PACKAGE_ACCESS_TOKEN:
+        required: true
+        description: 'Github package access token for @boma-marketing package'
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Checkout shared actions
+        uses: actions/checkout@v6
+        with:
+          ssh-key: ${{ secrets.SHARED_ACTIONS_SSH_KEY }}
+          repository: boma-marketing/gh-actions
+          ref: v4
+          path: ./.github/actions/boma
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+          scope: '@boma-marketing'
+
+      - name: Check tag matches version and is on main
+        run: |
+          test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        uses: ./.github/actions/boma/install-from-cache
+        with:
+          node-auth-token: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
+
+      - name: Run tests
+        run: ${{ inputs.TEST_COMMAND }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_PACKAGE_ACCESS_TOKEN }}
+
+      # Only this step gets the packages:write token; setup-node exports a
+      # placeholder NODE_AUTH_TOKEN so earlier yarn commands can read .yarnrc.yml.
+      - name: Publish package
+        run: yarn npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}

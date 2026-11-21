@@ -38,6 +38,9 @@ jobs:
         with:
           node-version: 24
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Install dependencies
         uses: ./.github/actions/boma/install-from-cache
         with:
